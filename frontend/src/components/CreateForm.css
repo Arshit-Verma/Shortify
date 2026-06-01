@@ -1,0 +1,78 @@
+/* Create Form Styles */
+
+.create-form {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.form-group input {
+  font-size: 1rem;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--color-accent);
+  color: #000;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: #ffed4e;
+  transform: translateY(-2px);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-submit.loading {
+  opacity: 0.8;
+}
+
+.success-message {
+  padding: 1rem;
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid var(--color-success);
+  border-radius: 0.5rem;
+  color: var(--color-success);
+  text-align: center;
+  font-weight: 600;
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .create-form {
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-submit {
+    padding: 0.875rem;
+    font-size: 1rem;
+  }
+}

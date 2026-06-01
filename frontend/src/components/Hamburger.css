@@ -1,0 +1,10 @@
+/* Hamburger Button Styles */
+
+.hamburger-btn svg {
+  color: var(--color-text-primary);
+  transition: color 0.2s ease;
+}
+
+.hamburger-btn:hover svg {
+  color: #ffed4e;
+}
