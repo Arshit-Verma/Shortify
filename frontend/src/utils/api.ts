@@ -1,4 +1,5 @@
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:4000';
+const API_BASE_URL =
+  (import.meta as any).env?.VITE_API_URL || "http://localhost:4000";
 
 export interface LinkData {
   id: string;
@@ -28,33 +29,35 @@ export interface ApiError {
  * Get owner token from localStorage or null
  */
 function getOwnerToken(): string | null {
-  return localStorage.getItem('owner_token');
+  return localStorage.getItem("owner_token");
 }
 
 /**
  * Set owner token in localStorage
  */
 function setOwnerToken(token: string): void {
-  localStorage.setItem('owner_token', token);
+  localStorage.setItem("owner_token", token);
 }
 
 /**
  * Create a short link
  */
-export async function createShortLink(targetUrl: string): Promise<CreateLinkResponse> {
+export async function createShortLink(
+  targetUrl: string,
+): Promise<CreateLinkResponse> {
   const ownerToken = getOwnerToken();
 
   const response = await fetch(`${API_BASE_URL}/api/shorten`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      ...(ownerToken ? { 'X-Owner-Token': ownerToken } : {}),
+      "Content-Type": "application/json",
+      ...(ownerToken ? { "X-Owner-Token": ownerToken } : {}),
     },
     body: JSON.stringify({ target_url: targetUrl }),
   });
 
   // Check if a new owner token was issued
-  const newToken = response.headers.get('X-Owner-Token');
+  const newToken = response.headers.get("X-Owner-Token");
   if (newToken && !ownerToken) {
     setOwnerToken(newToken);
   }
@@ -74,13 +77,13 @@ export async function fetchLinks(): Promise<LinkData[]> {
   const ownerToken = getOwnerToken();
 
   if (!ownerToken) {
-    throw { code: 'NO_TOKEN', message: 'No owner token found' } as ApiError;
+    throw { code: "NO_TOKEN", message: "No owner token found" } as ApiError;
   }
 
   const response = await fetch(`${API_BASE_URL}/api/links`, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'X-Owner-Token': ownerToken,
+      "X-Owner-Token": ownerToken,
     },
   });
 
@@ -100,11 +103,34 @@ export async function copyToClipboard(text: string): Promise<void> {
     await navigator.clipboard.writeText(text);
   } else {
     // Fallback for older browsers
-    const textArea = document.createElement('textarea');
+    const textArea = document.createElement("textarea");
     textArea.value = text;
     document.body.appendChild(textArea);
     textArea.select();
-    document.execCommand('copy');
+    document.execCommand("copy");
     document.body.removeChild(textArea);
+  }
+}
+
+/**
+ * Delete a short link
+ */
+export async function deleteShortLink(linkId: string): Promise<void> {
+  const ownerToken = getOwnerToken();
+
+  if (!ownerToken) {
+    throw { code: "NO_TOKEN", message: "No owner token found" } as ApiError;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/links/${linkId}`, {
+    method: "DELETE",
+    headers: {
+      "X-Owner-Token": ownerToken,
+    },
+  });
+
+  if (!response.ok) {
+    const error = (await response.json()) as ApiError;
+    throw error;
   }
 }

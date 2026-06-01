@@ -1,5 +1,4 @@
 import supabase, { Link } from './supabaseClient.js';
-import { v4 as uuidv4 } from 'uuid';
 
 const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const SHORT_CODE_LENGTH = 6;
@@ -130,6 +129,38 @@ export function incrementClickCount(linkId: string): void {
       console.error(`Failed to increment click count for link ${linkId}:`, err);
     }
   })();
+}
+
+/**
+ * Delete a link by ID (only owner can delete)
+ * Verifies ownership by checking owner_token
+ */
+export async function deleteLink(linkId: string, ownerToken: string): Promise<void> {
+  // First, fetch the link to verify ownership
+  const { data: link, error: fetchError } = await supabase
+    .from('links')
+    .select('id, owner_token')
+    .eq('id', linkId)
+    .single();
+
+  if (fetchError || !link) {
+    throw new Error('Link not found');
+  }
+
+  // Verify ownership
+  if (link.owner_token !== ownerToken) {
+    throw new Error('You are not authorized to delete this link');
+  }
+
+  // Delete the link (cascade will delete associated clicks)
+  const { error: deleteError } = await supabase
+    .from('links')
+    .delete()
+    .eq('id', linkId);
+
+  if (deleteError) {
+    throw new Error(`Failed to delete link: ${deleteError.message}`);
+  }
 }
 
 /**

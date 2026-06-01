@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { fetchLinks, LinkData, CreateLinkResponse } from '../utils/api';
-import { CreateForm } from '../components/CreateForm';
-import { LinkCard } from '../components/LinkCard';
-import './Dashboard.css';
+import React, { useState, useEffect } from "react";
+import { fetchLinks, LinkData, CreateLinkResponse } from "../utils/api";
+import { CreateForm } from "../components/CreateForm";
+import { LinkCard } from "../components/LinkCard";
+import "./Dashboard.css";
 
 export const Dashboard: React.FC = () => {
   const [links, setLinks] = useState<LinkData[]>([]);
@@ -23,8 +23,8 @@ export const Dashboard: React.FC = () => {
       setLinks(data);
     } catch (error: any) {
       // If no token, start fresh
-      if (error.code !== 'NO_TOKEN') {
-        setError(error.message || 'Failed to load links');
+      if (error.code !== "NO_TOKEN") {
+        setError(error.message || "Failed to load links");
       }
     } finally {
       setLoading(false);
@@ -35,6 +35,12 @@ export const Dashboard: React.FC = () => {
     setSuccessMessage(`Short link created: ${newLink.short_code}`);
     setTimeout(() => setSuccessMessage(null), 3000);
     loadLinks();
+  };
+
+  const handleLinkDeleted = (deletedId: string) => {
+    setLinks(links.filter((link) => link.id !== deletedId));
+    setSuccessMessage("Link deleted successfully");
+    setTimeout(() => setSuccessMessage(null), 3000);
   };
 
   const handleError = (errorMessage: string) => {
@@ -48,7 +54,9 @@ export const Dashboard: React.FC = () => {
         <h1 className="dashboard-title">Shortify</h1>
 
         {error && <div className="error-banner">{error}</div>}
-        {successMessage && <div className="success-banner">{successMessage}</div>}
+        {successMessage && (
+          <div className="success-banner">{successMessage}</div>
+        )}
 
         <CreateForm onLinkCreated={handleLinkCreated} onError={handleError} />
 
@@ -66,7 +74,11 @@ export const Dashboard: React.FC = () => {
           ) : (
             <div className="links-list">
               {links.map((link) => (
-                <LinkCard key={link.id} link={link} />
+                <LinkCard
+                  key={link.id}
+                  link={link}
+                  onDelete={handleLinkDeleted}
+                />
               ))}
             </div>
           )}

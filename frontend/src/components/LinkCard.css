@@ -35,7 +35,7 @@
 }
 
 .short-code {
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-accent);
@@ -119,7 +119,8 @@
 }
 
 .btn-copy,
-.btn-open {
+.btn-open,
+.btn-delete {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 600;
@@ -149,6 +150,20 @@
   border-color: var(--color-accent);
 }
 
+.btn-delete {
+  background-color: #dc2626;
+  color: #fff;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+.btn-delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Mobile Responsive */
 @media (max-width: 640px) {
   .link-card-header {
@@ -172,10 +187,13 @@
 
   .link-actions {
     width: 100%;
+    flex-wrap: wrap;
   }
 
   .btn-copy,
-  .btn-open {
+  .btn-open,
+  .btn-delete {
     flex: 1;
+    min-width: 80px;
   }
 }
