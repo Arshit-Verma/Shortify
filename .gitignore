@@ -9,6 +9,12 @@ build/
 *.tsbuildinfo
 .next/
 
+# Source-level build artifacts (safety net - should not happen with noEmit: true)
+src/**/*.js
+src/**/*.jsx
+!src/**/*.tsx
+!src/**/*.ts
+
 # Environment variables
 .env
 .env.local
